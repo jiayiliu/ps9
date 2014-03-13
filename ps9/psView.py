@@ -49,12 +49,8 @@ class Ds9Viewer(Tk.Toplevel):
         self.button_clean_region.grid(row=0, column=2)
         self.button_load_region_again = Tk.Button(frame_ds9, text="Load again", state=Tk.DISABLED)
         self.button_load_region_again.grid(row=0, column=3)
-        self.button_get_pos = Tk.Button(frame_ds9, text="Get Position (g)", state=Tk.DISABLED)
-        self.button_get_pos.grid(row=1, column=0)
         self.button_select_pos = Tk.Button(frame_ds9, text="Select Position (s)", state=Tk.DISABLED)
-        self.button_select_pos.grid(row=1, column=1)
-        self.button_pop_pos = Tk.Button(frame_ds9, text="Remove", state=Tk.DISABLED)
-        self.button_pop_pos.grid(row=1, column=2)
+        self.button_select_pos.grid(row=1, column=0)
         # Record Keeping
         frame_record = Tk.Frame(self)
         frame_record.grid()

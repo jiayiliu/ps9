@@ -40,6 +40,9 @@ class Ds9Model():
         self.pos = [0, 0]
         self.cat = None
 
+        self.all_pos = list()
+        self.all_match_id = list()
+
     def clean_region(self):
         """
         clean region in DS9 image, and empty selection list
@@ -69,6 +72,14 @@ class Ds9Model():
         """
         self.cat = np.loadtxt(filename)
 
+    def get_all_pos(self):
+        """
+        get all positions
+        """
+        self.all_pos = self.xpa.set("regions list -format xy -sky fk5 -system wcs")
+        print self.all_pos
+        self.match_all_cat()
+
     def get_pos(self):
         """
         get crosshair position
@@ -94,6 +105,14 @@ class Ds9Model():
         self.match_id = np.argmin(distance2(self.cat[:,0], self.cat[:,1], self.pos[0], self.pos[1]))
         self.pos = (self.cat[self.match_id,0], self.cat[self.match_id,1])
         self.xpa.set("crosshair {0:f} {1:f} wcs".format(self.pos[0], self.pos[1]))
+
+    def match_all_cat(self):
+        """
+        match all pos to catalog
+        """
+        self.all_match_id = list()
+        for pos in self.all_pos:
+            self.match_id.append(np.argmin(distance2(self.cat[:,0], self.cat[:,1], self.pos[0], self.pos[1])))
 
     def popout(self):
         """
@@ -139,6 +158,16 @@ class Ds9Model():
         """
         self.selection.append((self.match_id, self.pos[0], self.pos[1]))
 
+    def select_all_pos(self):
+        """
+        attach all match id to selection list
+        """
+        self.selection = list()
+        for i in self.all_match_id:
+            if i not in self.selection[:,0]:
+                self.selection.append((i, self.cat[0,i], self.cat[1,i]))
+        self.save_region("temp.reg")
+        self.load_region_files(["temp.reg"])
 
 def distance2(ra, dec, x0, y0):
     """

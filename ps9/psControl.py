@@ -52,17 +52,24 @@ class Ds9Controller():
         """
         self.model.create_xpa()
         self.viewer.focus_set()
-        self.viewer.button_get_pos.config(state=Tk.NORMAL, command=self.model.get_pos)
-        self.viewer.bind_all("<KeyPress-g>", lambda e: self.model.get_pos())
-        self.viewer.button_select_pos.config(command=self.select_pos)
         self.select_ok[1] = True
         if self.select_ok[0]:
-            self.viewer.button_select_pos.config(state=Tk.NORMAL)
-            self.viewer.bind_all("<KeyPress-s>", lambda e: self.select_pos())
+            self.viewer.button_select_pos.config(state=Tk.NORMAL, command=self.get_all_pos)
+            self.viewer.bind_all("<KeyPress-s>", lambda e: self.get_all_pos())
         self.viewer.button_load_region.config(state=Tk.NORMAL)
         self.viewer.button_clean_region.config(state=Tk.NORMAL, command=self.model.clean_region)
-        self.viewer.button_pop_pos.config(state=Tk.NORMAL, command=self.popout)
         self.viewer.button_save_img.config(state=Tk.NORMAL)
+
+    def get_all_pos(self):
+        """
+        get all positions
+        """
+        self.model.get_all_pos()
+        self.model.select_all_pos()
+        self.viewer.text_region.config(state=Tk.NORMAL)
+        self.viewer.text_region.delete(1.0, Tk.END)
+        self.viewer.text_region.insert(Tk.END, self.model.display_selection())
+        self.viewer.text_region.config(state=Tk.DISABLED)
 
     def get_cat(self):
         """
@@ -91,16 +98,6 @@ class Ds9Controller():
         else:
             self.viewer.button_load_region_again.config(state=Tk.DISABLED)
 
-    def popout(self):
-        """
-        pop out the last selection
-        """
-        self.model.popout()
-        self.viewer.text_region.config(state=Tk.NORMAL)
-        self.viewer.text_region.delete(1.0, Tk.END)
-        self.viewer.text_region.insert(Tk.END, self.model.display_selection())
-        self.viewer.text_region.config(state=Tk.DISABLED)
-
     def save_list(self):
         """
         save selected catalog into new place
@@ -128,10 +125,6 @@ class Ds9Controller():
         self.viewer.text_region.delete(1.0, Tk.END)
         self.viewer.text_region.insert(Tk.END, self.model.display_selection())
         self.viewer.text_region.config(state=Tk.DISABLED)
-
-
-
-
 
 if __name__ == "__main__":
     rfile = FITS_PATTERN.format(216, 'i')
