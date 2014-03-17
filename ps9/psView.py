@@ -51,6 +51,10 @@ class Ds9Viewer(Tk.Toplevel):
         self.button_load_region_again.grid(row=0, column=3)
         self.button_select_pos = Tk.Button(frame_ds9, text="Select Position (s)", state=Tk.DISABLED)
         self.button_select_pos.grid(row=1, column=0)
+        self.button_select_one = Tk.Button(frame_ds9, text="Pick One", state=Tk.DISABLED)
+        self.button_select_one.grid(row=1, column=1)
+        self.button_remove_one = Tk.Button(frame_ds9, text="Remove One", state=Tk.DISABLED)
+        self.button_remove_one.grid(row=1, column=2)
         # Record Keeping
         frame_record = Tk.Frame(self)
         frame_record.grid()
@@ -65,6 +69,15 @@ class Ds9Viewer(Tk.Toplevel):
         self.text_region = Tk.Text(frame_selection, wrap=Tk.NONE, bd=0, state=Tk.DISABLED)
         self.text_region.grid(row=0, column=0, sticky=Tk.N+Tk.S+Tk.E+Tk.W)
         y_scrollbar = Tk.Scrollbar(frame_selection, command=self.text_region.yview)
-        y_scrollbar.grid(row=1, column=1, sticky=Tk.N+Tk.S)
+        y_scrollbar.grid(row=0, column=1, sticky=Tk.N+Tk.S)
         self.text_region.config(yscrollcommand=y_scrollbar.set)
 
+    def update_list(self, text):
+        """ display the text information
+        
+        :param text: message to show
+        """
+        self.text_region.config(state=Tk.NORMAL)
+        self.text_region.delete(1.0, Tk.END)
+        self.text_region.insert(Tk.END, text)
+        self.text_region.config(state=Tk.DISABLED)

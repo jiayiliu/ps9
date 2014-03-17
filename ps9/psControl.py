@@ -56,9 +56,20 @@ class Ds9Controller():
         if self.select_ok[0]:
             self.viewer.button_select_pos.config(state=Tk.NORMAL, command=self.get_all_pos)
             self.viewer.bind_all("<KeyPress-s>", lambda e: self.get_all_pos())
+            self.viewer.button_select_one.config(state=Tk.NORMAL, command=self.get_pos)
+            self.viewer.button_remove_one.config(state=Tk.NORMAL, command=self.popout)
         self.viewer.button_load_region.config(state=Tk.NORMAL)
         self.viewer.button_clean_region.config(state=Tk.NORMAL, command=self.model.clean_region)
         self.viewer.button_save_img.config(state=Tk.NORMAL)
+
+    def get_pos(self):
+        """
+        get one position and print out
+        """
+        self.model.xpa.set("crosshair {0:s}".format(self.model.xpa.get("crosshair")))
+        self.model.get_pos()
+        self.select_pos()
+        self.viewer.update_list(self.model.display_selection())
 
     def get_all_pos(self):
         """
@@ -66,10 +77,7 @@ class Ds9Controller():
         """
         self.model.get_all_pos()
         self.model.select_all_pos()
-        self.viewer.text_region.config(state=Tk.NORMAL)
-        self.viewer.text_region.delete(1.0, Tk.END)
-        self.viewer.text_region.insert(Tk.END, self.model.display_selection())
-        self.viewer.text_region.config(state=Tk.DISABLED)
+        self.viewer.update_list(self.model.display_selection())
 
     def get_cat(self):
         """
@@ -98,6 +106,14 @@ class Ds9Controller():
         else:
             self.viewer.button_load_region_again.config(state=Tk.DISABLED)
 
+    def popout(self):
+        """
+        pop out one selection in text field
+        """
+        self.model.popout()
+        self.viewer.update_list(self.model.display_selection())
+
+
     def save_list(self):
         """
         save selected catalog into new place
@@ -121,10 +137,7 @@ class Ds9Controller():
         Match the current position to closest catalog position
         """
         self.model.select_pos()
-        self.viewer.text_region.config(state=Tk.NORMAL)
-        self.viewer.text_region.delete(1.0, Tk.END)
-        self.viewer.text_region.insert(Tk.END, self.model.display_selection())
-        self.viewer.text_region.config(state=Tk.DISABLED)
+
 
 if __name__ == "__main__":
     rfile = FITS_PATTERN.format(216, 'i')
