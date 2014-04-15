@@ -46,6 +46,8 @@ class Ds9Model():
     def clean_region(self):
         """
         clean region in DS9 image, and empty selection list
+
+        ! the selection is still available !
         """
         self.xpa.set("regions deleteall")
 
@@ -70,14 +72,20 @@ class Ds9Model():
     def get_cat(self, filename):
         """
         get the catalog
+        also refresh selection and show_selection
+
+        :param filename: catalog to load
         """
+        self.selection = list()
+        self.show_selection = list()
         self.cat = np.loadtxt(filename)
+        self.display_selection()
 
     def get_all_pos(self):
         """
         get all positions
         """
-        all_pos = self.xpa.get("regions list -format xy -sky fk5 -system wcs")
+        all_pos = self.xpa.get("regions list -format xy -sky fk5 -system wcs -coordformat degree")
         if len(all_pos) == 0:
             self.all_pos = None
             return
