@@ -39,6 +39,7 @@ will replace the pyds9 to an pseudo ds9 connector.
 + Tkinter
 + numpy
 + matplotlib
++ XPA
 
 # Usage
 
